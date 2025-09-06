@@ -4,8 +4,8 @@
 
 {% block content %}
 <section class="recommendations-section">
-    <h2>Your Personalized Internship Recommendations</h2>
-    <p class="recommendations-intro">Based on your profile, we've found these internships that match your skills and interests.</p>
+    <h2 data-i18n="recommendations.title">Your Personalized Internship Recommendations</h2>
+    <p class="recommendations-intro" data-i18n="recommendations.intro">Based on your profile, we've found these internships that match your skills and interests.</p>
 
     <div class="recommendations-container">
         {% for recommendation in recommendations %}
@@ -20,11 +20,11 @@
             <div class="card-body">
                 <div class="internship-details">
                     <div class="detail">
-                        <span class="label">Duration:</span>
+                        <span class="label" data-i18n="recommendations.duration">Duration:</span>
                         <span class="value">{{ recommendation.duration }}</span>
                     </div>
                     <div class="detail">
-                        <span class="label">Stipend:</span>
+                        <span class="label" data-i18n="recommendations.stipend">Stipend:</span>
                         <span class="value">₹{{ recommendation.stipend }}/month</span>
                     </div>
                 </div>
@@ -34,20 +34,20 @@
                 </div>
                 <p class="internship-description">{{ recommendation.description }}</p>
                 <div class="apply-action">
-                    <a href="{{ recommendation.apply_url }}" class="btn primary-btn" target="_blank">Apply Now</a>
+                    <a href="{{ recommendation.apply_url }}" class="btn primary-btn" target="_blank" data-i18n="recommendations.apply">Apply Now</a>
                 </div>
             </div>
 
             <div class="card-footer">
                 <div class="collapsible-section">
                     <button class="collapsible">
-                        <i class="fas fa-graduation-cap"></i> Skill Development
+                        <i class="fas fa-graduation-cap"></i> <span data-i18n="recommendations.skills_needed">Skill Development</span>
                         <span class="toggle-icon"><i class="fas fa-chevron-down"></i></span>
                     </button>
                     <div class="collapsible-content">
                         {% if recommendation.missing_skills %}
                         <div class="missing-skills">
-                            <h4>Skills to Develop</h4>
+                            <h4 data-i18n="recommendations.missing_skills">Skills to Develop</h4>
                             <ul class="skills-list">
                                 {% for skill in recommendation.missing_skills %}
                                 <li>{{ skill }}</li>
@@ -58,12 +58,12 @@
 
                         {% if recommendation.learning_resources %}
                         <div class="learning-resources">
-                            <h4>Learning Resources</h4>
+                            <h4 data-i18n="recommendations.resources">Learning Resources</h4>
                             <ul class="resources-list">
                                 {% for resource in recommendation.learning_resources %}
                                 <li>
                                     <a href="{{ resource.url }}" target="_blank">
-                                        {{ resource.name }} ({{ resource.skill }})
+                                        {{ resource.name }} (<span data-i18n="recommendations.resource_for">Resource for</span> {{ resource.skill }})
                                     </a>
                                 </li>
                                 {% endfor %}
@@ -76,38 +76,38 @@
                 {% if recommendation.career_path %}
                 <div class="collapsible-section">
                     <button class="collapsible">
-                        <i class="fas fa-road"></i> Career Path
+                        <i class="fas fa-road"></i> <span data-i18n="recommendations.career_path">Career Path</span>
                         <span class="toggle-icon"><i class="fas fa-chevron-down"></i></span>
                     </button>
                     <div class="collapsible-content">
                         <div class="career-path">
-                            <h4>Your Career Journey</h4>
+                            <h4 data-i18n="recommendations.career_journey">Your Career Journey</h4>
                             <div class="career-steps">
                                 <div class="career-step">
                                     <div class="step-icon">1</div>
                                     <div class="step-content">
-                                        <span class="step-title">Internship</span>
+                                        <span class="step-title" data-i18n="recommendations.step_internship">Internship</span>
                                         <span class="step-description">{{ recommendation.title }}</span>
                                     </div>
                                 </div>
                                 <div class="career-step">
                                     <div class="step-icon">2</div>
                                     <div class="step-content">
-                                        <span class="step-title">Entry Level</span>
+                                        <span class="step-title" data-i18n="recommendations.step_entry">Entry Level</span>
                                         <span class="step-description">{{ recommendation.career_path.Role_1 }}</span>
                                     </div>
                                 </div>
                                 <div class="career-step">
                                     <div class="step-icon">3</div>
                                     <div class="step-content">
-                                        <span class="step-title">Mid Level</span>
+                                        <span class="step-title" data-i18n="recommendations.step_mid">Mid Level</span>
                                         <span class="step-description">{{ recommendation.career_path.Role_2 }}</span>
                                     </div>
                                 </div>
                                 <div class="career-step">
                                     <div class="step-icon">4</div>
                                     <div class="step-content">
-                                        <span class="step-title">Senior Level</span>
+                                        <span class="step-title" data-i18n="recommendations.step_senior">Senior Level</span>
                                         <span class="step-description">{{ recommendation.career_path.Role_3 }}</span>
                                     </div>
                                 </div>
@@ -122,7 +122,7 @@
     </div>
 
     <div class="feedback-section">
-        <h3>Was this recommendation helpful?</h3>
+        <h3 data-i18n="recommendations.feedback_title">Was this recommendation helpful?</h3>
         <form action="{{ url_for('main.feedback') }}" method="post" class="feedback-form">
             <div class="rating">
                 <input type="radio" id="star5" name="rating" value="5">
@@ -137,15 +137,15 @@
                 <label for="star1"></label>
             </div>
             <div class="feedback-comment">
-                <textarea name="comment" placeholder="Any additional feedback? (optional)"></textarea>
+                <textarea name="comment" placeholder="Any additional feedback? (optional)" data-i18n="recommendations.feedback_placeholder"></textarea>
             </div>
-            <button type="submit" class="btn secondary-btn">Submit Feedback</button>
+            <button type="submit" class="btn secondary-btn" data-i18n="recommendations.feedback_submit">Submit Feedback</button>
         </form>
     </div>
 
     <div class="action-buttons">
         <a href="{{ url_for('main.index') }}" class="btn secondary-btn">
-            <i class="fas fa-arrow-left"></i> Search Again
+            <i class="fas fa-arrow-left"></i> <span data-i18n="recommendations.search_again">Search Again</span>
         </a>
     </div>
 </section>

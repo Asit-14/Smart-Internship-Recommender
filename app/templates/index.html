@@ -5,24 +5,24 @@
 {% block content %}
 <section class="hero">
     <div class="hero-content">
-        <h2>Find the Perfect Internship Opportunity</h2>
-        <p>Let us recommend internships that match your skills and interests</p>
+        <h2 data-i18n="hero.title">Find the Perfect Internship Opportunity</h2>
+        <p data-i18n="hero.subtitle">Let us recommend internships that match your skills and interests</p>
     </div>
 </section>
 
 <section class="input-section">
     <div class="tabs">
-        <button class="tab-btn active" onclick="switchTab('form-tab')">Fill Form</button>
-        <button class="tab-btn" onclick="switchTab('resume-tab')">Upload Resume</button>
-        <button class="tab-btn" onclick="switchTab('voice-tab')">Voice Input</button>
+        <button class="tab-btn active" onclick="switchTab('form-tab')" data-i18n="tabs.form">Fill Form</button>
+        <button class="tab-btn" onclick="switchTab('resume-tab')" data-i18n="tabs.resume">Upload Resume</button>
+        <button class="tab-btn" onclick="switchTab('voice-tab')" data-i18n="tabs.voice">Voice Input</button>
     </div>
 
     <div class="tab-content" id="form-tab">
         <form action="{{ url_for('main.form_submit') }}" method="post" class="input-form">
             <div class="form-group">
-                <label for="education">Highest Education</label>
+                <label for="education" data-i18n="form.education.label">Highest Education</label>
                 <select id="education" name="education" required>
-                    <option value="">Select Education</option>
+                    <option value="" data-i18n="form.education.placeholder">Select Education</option>
                     {% for edu in education %}
                     <option value="{{ edu }}">{{ edu }}</option>
                     {% endfor %}
@@ -30,9 +30,9 @@
             </div>
 
             <div class="form-group">
-                <label for="sector">Sector of Interest</label>
+                <label for="sector" data-i18n="form.sector.label">Sector of Interest</label>
                 <select id="sector" name="sector" required>
-                    <option value="">Select Sector</option>
+                    <option value="" data-i18n="form.sector.placeholder">Select Sector</option>
                     {% for sector in sectors %}
                     <option value="{{ sector }}">{{ sector }}</option>
                     {% endfor %}
@@ -40,9 +40,9 @@
             </div>
 
             <div class="form-group">
-                <label for="location">Preferred Location</label>
+                <label for="location" data-i18n="form.location.label">Preferred Location</label>
                 <select id="location" name="location" required>
-                    <option value="">Select Location</option>
+                    <option value="" data-i18n="form.location.placeholder">Select Location</option>
                     {% for location in locations %}
                     <option value="{{ location }}">{{ location }}</option>
                     {% endfor %}
@@ -50,10 +50,10 @@
             </div>
 
             <div class="form-group">
-                <label>Skills</label>
+                <label data-i18n="form.skills.label">Skills</label>
                 <div class="skills-container">
                     <div class="skills-input-container">
-                        <input type="text" id="skills-input" placeholder="Type to search skills">
+                        <input type="text" id="skills-input" data-i18n="form.skills.placeholder" placeholder="Type to search skills">
                         <div class="skills-dropdown" id="skills-dropdown"></div>
                     </div>
                     <div class="selected-skills" id="selected-skills"></div>
@@ -61,7 +61,7 @@
             </div>
 
             <div class="form-action">
-                <button type="submit" class="btn primary-btn">Get Recommendations</button>
+                <button type="submit" class="btn primary-btn" data-i18n="form.submit">Get Recommendations</button>
             </div>
         </form>
     </div>
@@ -69,18 +69,18 @@
     <div class="tab-content" id="resume-tab" style="display: none;">
         <form action="{{ url_for('main.resume_submit') }}" method="post" enctype="multipart/form-data" class="input-form">
             <div class="form-group file-upload">
-                <label for="resume">Upload your resume (PDF or DOCX)</label>
+                <label for="resume" data-i18n="resume.label">Upload your resume (PDF or DOCX)</label>
                 <div class="file-upload-container">
                     <input type="file" id="resume" name="resume" accept=".pdf,.docx,.doc" required>
                     <div class="file-upload-label">
                         <i class="fas fa-cloud-upload-alt"></i>
-                        <span id="file-name">Choose a file</span>
+                        <span id="file-name" data-i18n="resume.placeholder">Choose a file</span>
                     </div>
                 </div>
             </div>
 
             <div class="form-action">
-                <button type="submit" class="btn primary-btn">Analyze Resume</button>
+                <button type="submit" class="btn primary-btn" data-i18n="resume.submit">Analyze Resume</button>
             </div>
         </form>
     </div>
@@ -88,41 +88,41 @@
     <div class="tab-content" id="voice-tab" style="display: none;">
         <div class="voice-input-container">
             <div class="voice-instruction">
-                <h3>Speak Your Preferences</h3>
-                <p>You can mention any of the following information:</p>
+                <h3 data-i18n="voice.instruction">Speak Your Preferences</h3>
+                <p data-i18n="voice.subtitle">You can mention any of the following information:</p>
                 <ul>
-                    <li><strong>Skills:</strong> Programming, Data Analysis, Marketing, Design, etc.</li>
-                    <li><strong>Sector:</strong> IT, Education, Healthcare, Finance, etc.</li>
-                    <li><strong>Location:</strong> Delhi, Mumbai, Patna, Bengaluru, etc.</li>
+                    <li><strong data-i18n="voice.skills">Skills:</strong> Programming, Data Analysis, Marketing, Design, etc.</li>
+                    <li><strong data-i18n="voice.sector">Sector:</strong> IT, Education, Healthcare, Finance, etc.</li>
+                    <li><strong data-i18n="voice.location">Location:</strong> Delhi, Mumbai, Patna, Bengaluru, etc.</li>
                 </ul>
-                <p>Examples:</p>
-                <blockquote>"I want a teaching internship in Patna"</blockquote>
-                <blockquote>"I'm looking for IT internship in Bengaluru with programming skills"</blockquote>
-                <blockquote>"I have skills in data analysis and I'm interested in finance sector"</blockquote>
+                <p data-i18n="voice.examples">Examples:</p>
+                <blockquote data-i18n="voice.example1">"I want a teaching internship in Patna"</blockquote>
+                <blockquote data-i18n="voice.example2">"I'm looking for IT internship in Bengaluru with programming skills"</blockquote>
+                <blockquote data-i18n="voice.example3">"I have skills in data analysis and I'm interested in finance sector"</blockquote>
             </div>
 
             <!-- JavaScript voice recognition -->
             <div class="voice-control">
                 <button id="start-voice" class="voice-btn" type="button">
                     <i class="fas fa-microphone"></i>
-                    <span>Tap to Speak</span>
+                    <span data-i18n="voice.button">Tap to Speak</span>
                 </button>
                 <div class="voice-status" id="voice-status"></div>
             </div>
 
             <div class="voice-result" id="voice-result" style="display: none;">
-                <h3>I understood:</h3>
+                <h3 data-i18n="voice.understood">I understood:</h3>
                 <p class="voice-transcript"><span id="voice-text"></span></p>
                 
-                <h3>Information Extracted:</h3>
+                <h3 data-i18n="voice.extracted">Information Extracted:</h3>
                 <div id="voice-form-data" class="voice-extracted-data"></div>
                 
                 <div class="voice-actions">
                     <button id="voice-retry" class="btn secondary-btn" type="button">
-                        <i class="fas fa-redo"></i> Try Again
+                        <i class="fas fa-redo"></i> <span data-i18n="voice.retry">Try Again</span>
                     </button>
                     <button id="voice-submit" class="btn primary-btn" type="button">
-                        <i class="fas fa-search"></i> Get Recommendations
+                        <i class="fas fa-search"></i> <span data-i18n="voice.submit">Get Recommendations</span>
                     </button>
                 </div>
             </div>
@@ -130,17 +130,17 @@
             <!-- Fallback for users without JavaScript -->
             <noscript>
                 <div class="noscript-warning">
-                    <p>Voice input requires JavaScript. Please enable JavaScript or use the text input below.</p>
+                    <p data-i18n="voice.noscript">Voice input requires JavaScript. Please enable JavaScript or use the text input below.</p>
                 </div>
                 <form action="{{ url_for('main.voice_input') }}" method="post" class="fallback-voice-form">
                     <div class="form-group">
-                        <label for="voice_text">Type your preferences:</label>
+                        <label for="voice_text" data-i18n="voice.fallback_label">Type your preferences:</label>
                         <textarea id="voice_text" name="voice_text" rows="3" 
-                                  placeholder="Example: I want an IT internship in Delhi with programming skills" 
+                                  data-i18n="voice.fallback_placeholder" placeholder="Example: I want an IT internship in Delhi with programming skills" 
                                   required></textarea>
                     </div>
                     <div class="form-action">
-                        <button type="submit" class="btn primary-btn">Get Recommendations</button>
+                        <button type="submit" class="btn primary-btn" data-i18n="form.submit">Get Recommendations</button>
                     </div>
                 </form>
             </noscript>
@@ -149,28 +149,28 @@
 </section>
 
 <section class="features-section">
-    <h2>Why Use PM Internship Recommender?</h2>
+    <h2 data-i18n="features.title">Why Use PM Internship Recommender?</h2>
     <div class="features">
         <div class="feature-card">
             <div class="feature-icon">
                 <i class="fas fa-bullseye"></i>
             </div>
-            <h3>Personalized Recommendations</h3>
-            <p>Get internship recommendations tailored to your skills and interests</p>
+            <h3 data-i18n="features.personalized.title">Personalized Recommendations</h3>
+            <p data-i18n="features.personalized.description">Get internship recommendations tailored to your skills and interests</p>
         </div>
         <div class="feature-card">
             <div class="feature-icon">
                 <i class="fas fa-road"></i>
             </div>
-            <h3>Career Path Planning</h3>
-            <p>See where your internship could lead in your future career</p>
+            <h3 data-i18n="features.career.title">Career Path Planning</h3>
+            <p data-i18n="features.career.description">See where your internship could lead in your future career</p>
         </div>
         <div class="feature-card">
             <div class="feature-icon">
                 <i class="fas fa-graduation-cap"></i>
             </div>
-            <h3>Skill Development</h3>
-            <p>Identify skill gaps and find resources to improve</p>
+            <h3 data-i18n="features.skill.title">Skill Development</h3>
+            <p data-i18n="features.skill.description">Identify skill gaps and find resources to improve</p>
         </div>
     </div>
 </section>

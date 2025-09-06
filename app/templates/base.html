@@ -16,11 +16,11 @@
                 <img src="{{ url_for('static', filename='images/national_emblem.png') }}" alt="National Emblem">
             </div>
             <div class="header-title">
-                <h1>PM Internship Recommender</h1>
-                <p>Find the perfect internship for your career</p>
+                <h1 data-i18n="header.title">PM Internship Recommender</h1>
+                <p data-i18n="header.tagline">Find the perfect internship for your career</p>
             </div>
             <div class="language-toggle">
-                <button id="lang-toggle" onclick="toggleLanguage()">
+                <button id="lang-toggle">
                     <span id="lang-text">हिंदी</span>
                     <i class="fas fa-language"></i>
                 </button>
@@ -48,20 +48,20 @@
     <footer>
         <div class="footer-container">
             <div class="footer-section">
-                <h3>PM Internship Recommender</h3>
-                <p>A government initiative to connect talented youth with quality internship opportunities</p>
+                <h3 data-i18n="header.title">PM Internship Recommender</h3>
+                <p data-i18n="footer.disclaimer">A government initiative to connect talented youth with quality internship opportunities</p>
             </div>
             <div class="footer-section">
-                <h3>Important Links</h3>
+                <h3 data-i18n="footer.important_links">Important Links</h3>
                 <ul>
-                    <li><a href="#">About</a></li>
-                    <li><a href="#">Contact</a></li>
-                    <li><a href="#">Privacy Policy</a></li>
-                    <li><a href="#">Terms of Service</a></li>
+                    <li><a href="#" data-i18n="footer.about">About</a></li>
+                    <li><a href="#" data-i18n="footer.contact">Contact</a></li>
+                    <li><a href="#" data-i18n="footer.privacy">Privacy Policy</a></li>
+                    <li><a href="#" data-i18n="footer.terms">Terms of Service</a></li>
                 </ul>
             </div>
             <div class="footer-section">
-                <h3>Connect with Us</h3>
+                <h3 data-i18n="footer.connect">Connect with Us</h3>
                 <div class="social-icons">
                     <a href="#"><i class="fab fa-facebook"></i></a>
                     <a href="#"><i class="fab fa-twitter"></i></a>
@@ -71,12 +71,25 @@
             </div>
         </div>
         <div class="copyright">
-            <p>&copy; 2025 PM Internship Recommender. All rights reserved.</p>
+            <p data-i18n="footer.copyright">&copy; 2025 PM Internship Recommender. All rights reserved.</p>
         </div>
     </footer>
 
     <!-- JavaScript -->
     <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+    <script>
+        // Initialize language support when the page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize language
+            initializeLanguage();
+            
+            // Set up manual click handler for the language toggle button
+            document.getElementById('lang-toggle').onclick = function(event) {
+                event.preventDefault();
+                toggleLanguage();
+            };
+        });
+    </script>
     {% block scripts %}{% endblock %}
 </body>
 </html>

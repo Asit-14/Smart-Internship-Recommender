@@ -138,9 +138,14 @@ function initializeVoiceInput() {
     }
     
     const recognition = new SpeechRecognition();
-    recognition.lang = 'en-IN'; // Default to English (India)
+    // Use the current language setting or default to English (India)
+    const currentLang = localStorage.getItem('preferredLanguage') || 'en';
+    recognition.lang = currentLang === 'hi' ? 'hi-IN' : 'en-IN';
     recognition.continuous = false;
     recognition.interimResults = false;
+    
+    // Make the recognition object globally accessible so it can be updated when language changes
+    window.speechRecognition = recognition;
     
     // Function to start voice recognition
     function startVoiceRecognition() {
@@ -330,17 +335,150 @@ function switchTab(tabId) {
     document.querySelector(`.tab-btn[onclick="switchTab('${tabId}')"]`).classList.add('active');
 }
 
+// Global variable to hold translations
+let translations = {};
+let currentLanguage = 'en';
+
+// Load translations for a given language
+async function loadTranslations(lang) {
+    console.log(`Loading translations for language: ${lang}`);
+    try {
+        // Add a cache-busting parameter to avoid browser caching
+        const timestamp = new Date().getTime();
+        const response = await fetch(`/static/locales/${lang}.json?t=${timestamp}`);
+        
+        if (!response.ok) {
+            console.error(`Failed to load translations: HTTP status ${response.status}`);
+            throw new Error(`Failed to load translations for ${lang}`);
+        }
+        
+        const data = await response.json();
+        console.log(`Loaded translations for ${lang}:`, Object.keys(data));
+        translations = data;
+        return translations;
+    } catch (error) {
+        console.error('Error loading translations:', error);
+        return null;
+    }
+}
+
+// Initialize language from local storage or default to English
+async function initializeLanguage() {
+    // Get stored language preference or default to English
+    currentLanguage = localStorage.getItem('preferredLanguage') || 'en';
+    const langBtn = document.getElementById('lang-toggle');
+    
+    // Set button text based on current language
+    if (langBtn) {
+        langBtn.querySelector('#lang-text').textContent = currentLanguage === 'en' ? 'हिंदी' : 'English';
+    }
+    
+    // Set the HTML lang attribute
+    document.documentElement.lang = currentLanguage;
+    
+    // Load translations
+    await loadTranslations(currentLanguage);
+    
+    // Apply translations
+    applyTranslations();
+    
+    console.log(`Language initialized: ${currentLanguage}`);
+}
+
+// Apply translations to all elements with data-i18n attribute
+function applyTranslations() {
+    console.log('Applying translations, found keys:', Object.keys(translations));
+    const elements = document.querySelectorAll('[data-i18n]');
+    console.log(`Found ${elements.length} elements with data-i18n attributes`);
+    
+    let appliedCount = 0;
+    let errorCount = 0;
+    
+    elements.forEach(element => {
+        try {
+            const key = element.getAttribute('data-i18n');
+            const path = key.split('.');
+            let value = translations;
+            
+            // Navigate through the translation object
+            for (const p of path) {
+                if (!value || value[p] === undefined) {
+                    console.warn(`Translation key not found: ${key}`);
+                    errorCount++;
+                    return;
+                }
+                value = value[p];
+            }
+            
+            // Apply translation based on element type
+            if (element.tagName === 'INPUT' || element.tagName === 'TEXTAREA') {
+                if (element.getAttribute('placeholder')) {
+                    element.setAttribute('placeholder', value);
+                } else {
+                    element.value = value;
+                }
+            } else {
+                element.innerHTML = value;
+            }
+            appliedCount++;
+        } catch (error) {
+            console.error('Error applying translation to element:', element, error);
+            errorCount++;
+        }
+    });
+    
+    console.log(`Applied ${appliedCount} translations with ${errorCount} errors`);
+}
+
 // Toggle between languages
-function toggleLanguage() {
+async function toggleLanguage(event) {
+    // Prevent default if this is called from a button click
+    if (event) {
+        event.preventDefault();
+    }
+    
+    console.log('toggleLanguage called');
     const langBtn = document.getElementById('lang-toggle');
     const currentLang = langBtn.querySelector('#lang-text').textContent;
     
+    console.log('Current button text:', currentLang);
+    
     if (currentLang === 'हिंदी') {
-        // Switch to Hindi (in a real app, this would load Hindi translations)
+        // Switch to Hindi
+        console.log('Switching to Hindi');
         langBtn.querySelector('#lang-text').textContent = 'English';
-        alert('Hindi language support is not implemented in this demo version.');
+        currentLanguage = 'hi';
+        document.documentElement.lang = 'hi';
+        
+        // Update speech recognition language if available
+        if (window.speechRecognition) {
+            window.speechRecognition.lang = 'hi-IN';
+        }
     } else {
-        // Switch back to English
+        // Switch to English
+        console.log('Switching to English');
         langBtn.querySelector('#lang-text').textContent = 'हिंदी';
+        currentLanguage = 'en';
+        document.documentElement.lang = 'en';
+        
+        // Update speech recognition language if available
+        if (window.speechRecognition) {
+            window.speechRecognition.lang = 'en-IN';
+        }
+    }
+    
+    // Store language preference
+    localStorage.setItem('preferredLanguage', currentLanguage);
+    
+    // Load and apply translations
+    console.log('Loading translations for', currentLanguage);
+    const newTranslations = await loadTranslations(currentLanguage);
+    if (newTranslations) {
+        console.log('Translations loaded successfully');
+        // Apply translations
+        applyTranslations();
+        console.log('Translations applied');
+    } else {
+        console.error('Failed to load translations');
     }
 }

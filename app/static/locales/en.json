@@ -1,0 +1,107 @@
+{
+  "header": {
+    "title": "PM Internship Recommender",
+    "tagline": "Find the perfect internship for your career"
+  },
+  "hero": {
+    "title": "Find the Perfect Internship Opportunity",
+    "subtitle": "Let us recommend internships that match your skills and interests"
+  },
+  "tabs": {
+    "form": "Fill Form",
+    "resume": "Upload Resume",
+    "voice": "Voice Input"
+  },
+  "form": {
+    "education": {
+      "label": "Highest Education",
+      "placeholder": "Select Education"
+    },
+    "sector": {
+      "label": "Sector of Interest",
+      "placeholder": "Select Sector"
+    },
+    "location": {
+      "label": "Preferred Location",
+      "placeholder": "Select Location"
+    },
+    "skills": {
+      "label": "Skills",
+      "placeholder": "Type to search skills"
+    },
+    "submit": "Get Recommendations"
+  },
+  "resume": {
+    "label": "Upload your resume (PDF or DOCX)",
+    "placeholder": "Choose a file",
+    "submit": "Analyze Resume"
+  },
+  "voice": {
+    "instruction": "Speak Your Preferences",
+    "subtitle": "You can mention any of the following information:",
+    "skills": "Skills:",
+    "sector": "Sector:",
+    "location": "Location:",
+    "examples": "Examples:",
+    "example1": "I want a teaching internship in Patna",
+    "example2": "I'm looking for IT internship in Bengaluru with programming skills",
+    "example3": "I have skills in data analysis and I'm interested in finance sector",
+    "button": "Tap to Speak",
+    "listening": "Listening...",
+    "understood": "I understood:",
+    "extracted": "Information Extracted:",
+    "retry": "Try Again",
+    "submit": "Get Recommendations",
+    "noscript": "Voice input requires JavaScript. Please enable JavaScript or use the text input below.",
+    "fallback_label": "Type your preferences:",
+    "fallback_placeholder": "Example: I want an IT internship in Delhi with programming skills"
+  },
+  "features": {
+    "title": "Why Use PM Internship Recommender?",
+    "personalized": {
+      "title": "Personalized Recommendations",
+      "description": "Get internship recommendations tailored to your skills and interests"
+    },
+    "career": {
+      "title": "Career Path Planning",
+      "description": "See where your internship could lead in your future career"
+    },
+    "skill": {
+      "title": "Skill Development",
+      "description": "Identify skill gaps and find resources to improve"
+    }
+  },
+  "recommendations": {
+    "title": "Your Personalized Internship Recommendations",
+    "intro": "Based on your profile, we've found these internships that match your skills and interests.",
+    "matches": "Matches for you",
+    "details": "View Details",
+    "apply": "Apply Now",
+    "skills_needed": "Skills Needed",
+    "missing_skills": "Skills you may need to develop",
+    "career_path": "Career Path",
+    "resources": "Learning Resources",
+    "resource_for": "Resource for",
+    "duration": "Duration:",
+    "stipend": "Stipend:",
+    "career_journey": "Your Career Journey",
+    "step_internship": "Internship",
+    "step_entry": "Entry Level",
+    "step_mid": "Mid Level",
+    "step_senior": "Senior Level",
+    "feedback_title": "Was this recommendation helpful?",
+    "feedback_placeholder": "Any additional feedback? (optional)",
+    "feedback_submit": "Submit Feedback",
+    "search_again": "Search Again"
+  },
+  "footer": {
+    "disclaimer": "A government initiative to connect talented youth with quality internship opportunities",
+    "copyright": "© 2025 PM Internship Recommender. All rights reserved.",
+    "important_links": "Important Links",
+    "about": "About",
+    "contact": "Contact",
+    "privacy": "Privacy Policy",
+    "terms": "Terms of Service",
+    "connect": "Connect with Us"
+  }
+}
