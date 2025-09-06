@@ -335,84 +335,82 @@ function switchTab(tabId) {
     document.querySelector(`.tab-btn[onclick="switchTab('${tabId}')"]`).classList.add('active');
 }
 
-// Global variable to hold translations
+// Global variables
 let translations = {};
 let currentLanguage = 'en';
 
-// Load translations for a given language
-async function loadTranslations(lang) {
-    console.log(`Loading translations for language: ${lang}`);
-    try {
-        // Add a cache-busting parameter to avoid browser caching
-        const timestamp = new Date().getTime();
-        const response = await fetch(`/static/locales/${lang}.json?t=${timestamp}`);
-        
-        if (!response.ok) {
-            console.error(`Failed to load translations: HTTP status ${response.status}`);
-            throw new Error(`Failed to load translations for ${lang}`);
-        }
-        
-        const data = await response.json();
-        console.log(`Loaded translations for ${lang}:`, Object.keys(data));
-        translations = data;
-        return translations;
-    } catch (error) {
-        console.error('Error loading translations:', error);
-        return null;
-    }
-}
-
-// Initialize language from local storage or default to English
-async function initializeLanguage() {
-    // Get stored language preference or default to English
+// Language switching functionality
+function initializeLanguage() {
+    // Get the stored language preference
     currentLanguage = localStorage.getItem('preferredLanguage') || 'en';
-    const langBtn = document.getElementById('lang-toggle');
     
-    // Set button text based on current language
-    if (langBtn) {
-        langBtn.querySelector('#lang-text').textContent = currentLanguage === 'en' ? 'हिंदी' : 'English';
-    }
+    console.log(`Initializing with language: ${currentLanguage}`);
     
     // Set the HTML lang attribute
     document.documentElement.lang = currentLanguage;
     
-    // Load translations
-    await loadTranslations(currentLanguage);
+    // Update the button text
+    const langToggleBtn = document.getElementById('lang-toggle');
+    if (langToggleBtn) {
+        langToggleBtn.querySelector('#lang-text').textContent = currentLanguage === 'en' ? 'हिंदी' : 'English';
+    }
     
-    // Apply translations
-    applyTranslations();
+    // Update speech recognition language if available
+    if (window.speechRecognition) {
+        window.speechRecognition.lang = currentLanguage === 'en' ? 'en-IN' : 'hi-IN';
+    }
     
-    console.log(`Language initialized: ${currentLanguage}`);
+    // Load and apply translations
+    loadAndApplyTranslations(currentLanguage);
+}
+
+// Load translations and apply them
+function loadAndApplyTranslations(lang) {
+    fetch(`/static/locales/${lang}.json?t=${new Date().getTime()}`)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`Failed to load translations for ${lang}`);
+            }
+            return response.json();
+        })
+        .then(data => {
+            translations = data;
+            console.log(`Loaded translations for ${lang}:`, Object.keys(translations));
+            applyTranslations();
+        })
+        .catch(error => {
+            console.error('Error loading translations:', error);
+        });
 }
 
 // Apply translations to all elements with data-i18n attribute
 function applyTranslations() {
-    console.log('Applying translations, found keys:', Object.keys(translations));
+    if (!translations || Object.keys(translations).length === 0) {
+        console.error('No translations available');
+        return;
+    }
+    
     const elements = document.querySelectorAll('[data-i18n]');
     console.log(`Found ${elements.length} elements with data-i18n attributes`);
-    
-    let appliedCount = 0;
-    let errorCount = 0;
     
     elements.forEach(element => {
         try {
             const key = element.getAttribute('data-i18n');
-            const path = key.split('.');
-            let value = translations;
+            const parts = key.split('.');
             
             // Navigate through the translation object
-            for (const p of path) {
-                if (!value || value[p] === undefined) {
+            let value = translations;
+            for (const part of parts) {
+                if (!value || !value[part]) {
                     console.warn(`Translation key not found: ${key}`);
-                    errorCount++;
                     return;
                 }
-                value = value[p];
+                value = value[part];
             }
             
-            // Apply translation based on element type
+            // Apply the translation based on element type
             if (element.tagName === 'INPUT' || element.tagName === 'TEXTAREA') {
-                if (element.getAttribute('placeholder')) {
+                if (element.hasAttribute('placeholder')) {
                     element.setAttribute('placeholder', value);
                 } else {
                     element.value = value;
@@ -420,65 +418,35 @@ function applyTranslations() {
             } else {
                 element.innerHTML = value;
             }
-            appliedCount++;
         } catch (error) {
             console.error('Error applying translation to element:', element, error);
-            errorCount++;
         }
     });
-    
-    console.log(`Applied ${appliedCount} translations with ${errorCount} errors`);
 }
 
 // Toggle between languages
-async function toggleLanguage(event) {
-    // Prevent default if this is called from a button click
-    if (event) {
-        event.preventDefault();
-    }
+function toggleLanguage() {
+    // Toggle the language
+    currentLanguage = currentLanguage === 'en' ? 'hi' : 'en';
+    console.log(`Language toggled to: ${currentLanguage}`);
     
-    console.log('toggleLanguage called');
-    const langBtn = document.getElementById('lang-toggle');
-    const currentLang = langBtn.querySelector('#lang-text').textContent;
-    
-    console.log('Current button text:', currentLang);
-    
-    if (currentLang === 'हिंदी') {
-        // Switch to Hindi
-        console.log('Switching to Hindi');
-        langBtn.querySelector('#lang-text').textContent = 'English';
-        currentLanguage = 'hi';
-        document.documentElement.lang = 'hi';
-        
-        // Update speech recognition language if available
-        if (window.speechRecognition) {
-            window.speechRecognition.lang = 'hi-IN';
-        }
-    } else {
-        // Switch to English
-        console.log('Switching to English');
-        langBtn.querySelector('#lang-text').textContent = 'हिंदी';
-        currentLanguage = 'en';
-        document.documentElement.lang = 'en';
-        
-        // Update speech recognition language if available
-        if (window.speechRecognition) {
-            window.speechRecognition.lang = 'en-IN';
-        }
-    }
-    
-    // Store language preference
+    // Save the preference
     localStorage.setItem('preferredLanguage', currentLanguage);
     
-    // Load and apply translations
-    console.log('Loading translations for', currentLanguage);
-    const newTranslations = await loadTranslations(currentLanguage);
-    if (newTranslations) {
-        console.log('Translations loaded successfully');
-        // Apply translations
-        applyTranslations();
-        console.log('Translations applied');
-    } else {
-        console.error('Failed to load translations');
+    // Update the HTML lang attribute
+    document.documentElement.lang = currentLanguage;
+    
+    // Update the button text
+    const langToggleBtn = document.getElementById('lang-toggle');
+    if (langToggleBtn) {
+        langToggleBtn.querySelector('#lang-text').textContent = currentLanguage === 'en' ? 'हिंदी' : 'English';
     }
+    
+    // Update speech recognition language if available
+    if (window.speechRecognition) {
+        window.speechRecognition.lang = currentLanguage === 'en' ? 'en-IN' : 'hi-IN';
+    }
+    
+    // Load and apply translations
+    loadAndApplyTranslations(currentLanguage);
 }
