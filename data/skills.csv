@@ -1,0 +1,252 @@
+Category,Skill
+IT,Python
+IT,Java
+IT,C++
+IT,C#
+IT,JavaScript
+IT,TypeScript
+IT,HTML
+IT,CSS
+IT,PHP
+IT,Ruby
+IT,Swift
+IT,Kotlin
+IT,Go
+IT,Rust
+IT,SQL
+IT,MongoDB
+IT,PostgreSQL
+IT,MySQL
+IT,Oracle
+IT,NoSQL
+IT,Git
+IT,Docker
+IT,Kubernetes
+IT,AWS
+IT,Azure
+IT,Google Cloud
+IT,React
+IT,Angular
+IT,Vue.js
+IT,Node.js
+IT,Django
+IT,Flask
+IT,Spring Boot
+IT,ASP.NET
+IT,Laravel
+IT,Express.js
+IT,TensorFlow
+IT,PyTorch
+IT,Scikit-learn
+IT,Pandas
+IT,NumPy
+IT,Data Visualization
+IT,Machine Learning
+IT,Deep Learning
+IT,AI
+IT,NLP
+IT,Computer Vision
+IT,Big Data
+IT,Hadoop
+IT,Spark
+IT,DevOps
+IT,CI/CD
+IT,Network Security
+IT,Cybersecurity
+IT,Ethical Hacking
+IT,Penetration Testing
+IT,Linux
+IT,Windows Server
+IT,UI/UX Design
+IT,Mobile App Development
+IT,RESTful API
+IT,GraphQL
+IT,Microservices
+Business,Marketing
+Business,Sales
+Business,Accounting
+Business,Finance
+Business,Human Resources
+Business,Project Management
+Business,Business Analysis
+Business,Customer Service
+Business,Supply Chain
+Business,Logistics
+Business,E-commerce
+Business,Digital Marketing
+Business,Content Marketing
+Business,SEO
+Business,SEM
+Business,Social Media Marketing
+Business,Email Marketing
+Business,CRM
+Business,ERP
+Business,Business Development
+Business,Event Planning
+Business,Public Relations
+Business,Market Research
+Business,Data Analysis
+Business,Financial Analysis
+Business,Risk Management
+Business,Strategic Planning
+Business,Operations Management
+Business,Change Management
+Business,Leadership
+Business,Negotiation
+Business,Presentation Skills
+Business,Communication
+Business,MS Office
+Business,Excel
+Business,PowerPoint
+Business,Word
+Business,Outlook
+Education,Teaching
+Education,Curriculum Development
+Education,Lesson Planning
+Education,Educational Technology
+Education,Special Education
+Education,Early Childhood Education
+Education,Elementary Education
+Education,Secondary Education
+Education,Higher Education
+Education,Adult Education
+Education,Educational Psychology
+Education,Student Assessment
+Education,Classroom Management
+Education,Education Administration
+Education,Education Policy
+Education,STEM Education
+Education,Language Teaching
+Education,Math Teaching
+Education,Science Teaching
+Education,Arts Education
+Education,Physical Education
+Education,Online Teaching
+Education,Educational Research
+Education,Learning Theories
+Education,Instructional Design
+Education,Student Counseling
+Social Work,Community Outreach
+Social Work,Case Management
+Social Work,Counseling
+Social Work,Crisis Intervention
+Social Work,Advocacy
+Social Work,Program Development
+Social Work,Grant Writing
+Social Work,Nonprofit Management
+Social Work,Child Welfare
+Social Work,Family Services
+Social Work,Mental Health Services
+Social Work,Substance Abuse Counseling
+Social Work,Gerontology
+Social Work,Rehabilitation Services
+Social Work,Group Facilitation
+Social Work,Needs Assessment
+Social Work,Program Evaluation
+Social Work,Social Policy
+Social Work,Community Organizing
+Social Work,Documentation
+Media,Content Creation
+Media,Copywriting
+Media,Journalism
+Media,Editing
+Media,Proofreading
+Media,Photography
+Media,Videography
+Media,Video Editing
+Media,Graphic Design
+Media,Animation
+Media,Illustration
+Media,Audio Production
+Media,Podcasting
+Media,Broadcasting
+Media,Social Media Content
+Media,Digital Media
+Media,Content Strategy
+Media,SEO Writing
+Media,Technical Writing
+Media,Blogging
+Creative,Graphic Design
+Creative,UI/UX Design
+Creative,Web Design
+Creative,Product Design
+Creative,Industrial Design
+Creative,Fashion Design
+Creative,Interior Design
+Creative,Architectural Design
+Creative,Visual Design
+Creative,Branding
+Creative,Logo Design
+Creative,Typography
+Creative,Illustration
+Creative,Animation
+Creative,Motion Graphics
+Creative,3D Modeling
+Creative,Photoshop
+Creative,Illustrator
+Creative,InDesign
+Creative,Sketch
+Creative,Figma
+Creative,Adobe XD
+Creative,After Effects
+Creative,Premiere Pro
+Healthcare,Nursing
+Healthcare,Patient Care
+Healthcare,Medical Coding
+Healthcare,Healthcare Administration
+Healthcare,Medical Research
+Healthcare,Public Health
+Healthcare,Pharmacy
+Healthcare,Physiotherapy
+Healthcare,Occupational Therapy
+Healthcare,Speech Therapy
+Healthcare,Radiology
+Healthcare,Laboratory Techniques
+Healthcare,Mental Health
+Healthcare,Clinical Psychology
+Healthcare,Health Education
+Healthcare,Nutrition
+Healthcare,Healthcare Technology
+Healthcare,Electronic Health Records
+Healthcare,Telemedicine
+Healthcare,Medical Ethics
+Finance,Financial Analysis
+Finance,Financial Modeling
+Finance,Accounting
+Finance,Bookkeeping
+Finance,Taxation
+Finance,Auditing
+Finance,Investment Analysis
+Finance,Banking
+Finance,Insurance
+Finance,Risk Management
+Finance,Financial Planning
+Finance,Portfolio Management
+Finance,Corporate Finance
+Finance,Financial Reporting
+Finance,Budgeting
+Finance,Forecasting
+Finance,Cost Analysis
+Finance,Tally
+Finance,SAP Finance
+Finance,Financial Software
+Engineering,Mechanical Engineering
+Engineering,Electrical Engineering
+Engineering,Civil Engineering
+Engineering,Chemical Engineering
+Engineering,Industrial Engineering
+Engineering,Aerospace Engineering
+Engineering,Automotive Engineering
+Engineering,Biomedical Engineering
+Engineering,Environmental Engineering
+Engineering,Materials Science
+Engineering,CAD
+Engineering,AutoCAD
+Engineering,SolidWorks
+Engineering,MATLAB
+Engineering,Circuit Design
+Engineering,PCB Design
+Engineering,PLC Programming
+Engineering,Robotics
+Engineering,Control Systems
+Engineering,Thermodynamics

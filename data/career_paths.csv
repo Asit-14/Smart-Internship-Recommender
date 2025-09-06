@@ -1,0 +1,33 @@
+Sector,Role_1,Role_2,Role_3
+IT,Junior Software Developer,Senior Software Developer,Software Architect
+IT,Data Analyst,Data Scientist,Data Science Manager
+IT,Web Developer,Full Stack Developer,Technical Lead
+IT,Cybersecurity Analyst,Cybersecurity Engineer,Chief Information Security Officer
+IT,QA Tester,QA Engineer,QA Manager
+IT,IT Support Technician,Systems Administrator,IT Manager
+Business,Marketing Assistant,Marketing Executive,Marketing Manager
+Business,Sales Executive,Sales Manager,Sales Director
+Business,HR Assistant,HR Executive,HR Manager
+Business,Finance Analyst,Finance Manager,Finance Director
+Business,Business Development Executive,Business Development Manager,Business Development Director
+Education,Teaching Assistant,Teacher,Principal
+Education,Educational Content Developer,Curriculum Designer,Academic Director
+Education,School Counselor,School Psychologist,Student Affairs Director
+Social Work,Case Worker,Case Manager,Program Director
+Social Work,Community Outreach Worker,Community Outreach Coordinator,Community Relations Manager
+Social Work,Social Worker,Clinical Social Worker,Social Services Director
+Media,Content Writer,Senior Content Writer,Content Director
+Media,Journalist,Senior Journalist,Editor
+Media,Social Media Executive,Social Media Manager,Digital Marketing Director
+Creative,Graphic Designer,Senior Graphic Designer,Creative Director
+Creative,UI/UX Designer,Senior UI/UX Designer,UX Director
+Creative,Video Editor,Senior Video Editor,Production Director
+Healthcare,Medical Assistant,Nurse,Head Nurse
+Healthcare,Healthcare Administrator,Healthcare Manager,Healthcare Director
+Healthcare,Medical Researcher,Senior Researcher,Research Director
+Finance,Accounting Assistant,Accountant,Finance Manager
+Finance,Financial Analyst,Senior Financial Analyst,Finance Director
+Finance,Investment Analyst,Investment Manager,Chief Investment Officer
+Engineering,Junior Engineer,Senior Engineer,Engineering Manager
+Engineering,Design Engineer,Senior Design Engineer,Design Director
+Engineering,Quality Control Engineer,Quality Assurance Manager,Quality Director
