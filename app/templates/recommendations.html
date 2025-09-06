@@ -1,0 +1,172 @@
+{% extends 'base.html' %}
+
+{% block title %}Your Personalized Internship Recommendations{% endblock %}
+
+{% block content %}
+<section class="recommendations-section">
+    <h2>Your Personalized Internship Recommendations</h2>
+    <p class="recommendations-intro">Based on your profile, we've found these internships that match your skills and interests.</p>
+
+    <div class="recommendations-container">
+        {% for recommendation in recommendations %}
+        <div class="recommendation-card">
+            <div class="card-header">
+                <h3>{{ recommendation.title }}</h3>
+                <div class="card-meta">
+                    <span class="sector"><i class="fas fa-briefcase"></i> {{ recommendation.sector }}</span>
+                    <span class="location"><i class="fas fa-map-marker-alt"></i> {{ recommendation.location }}</span>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="internship-details">
+                    <div class="detail">
+                        <span class="label">Duration:</span>
+                        <span class="value">{{ recommendation.duration }}</span>
+                    </div>
+                    <div class="detail">
+                        <span class="label">Stipend:</span>
+                        <span class="value">₹{{ recommendation.stipend }}/month</span>
+                    </div>
+                </div>
+                <div class="reason-box">
+                    <span class="reason-icon"><i class="fas fa-check-circle"></i></span>
+                    <span class="reason-text">{{ recommendation.reason }}</span>
+                </div>
+                <p class="internship-description">{{ recommendation.description }}</p>
+                <div class="apply-action">
+                    <a href="{{ recommendation.apply_url }}" class="btn primary-btn" target="_blank">Apply Now</a>
+                </div>
+            </div>
+
+            <div class="card-footer">
+                <div class="collapsible-section">
+                    <button class="collapsible">
+                        <i class="fas fa-graduation-cap"></i> Skill Development
+                        <span class="toggle-icon"><i class="fas fa-chevron-down"></i></span>
+                    </button>
+                    <div class="collapsible-content">
+                        {% if recommendation.missing_skills %}
+                        <div class="missing-skills">
+                            <h4>Skills to Develop</h4>
+                            <ul class="skills-list">
+                                {% for skill in recommendation.missing_skills %}
+                                <li>{{ skill }}</li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                        {% endif %}
+
+                        {% if recommendation.learning_resources %}
+                        <div class="learning-resources">
+                            <h4>Learning Resources</h4>
+                            <ul class="resources-list">
+                                {% for resource in recommendation.learning_resources %}
+                                <li>
+                                    <a href="{{ resource.url }}" target="_blank">
+                                        {{ resource.name }} ({{ resource.skill }})
+                                    </a>
+                                </li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+
+                {% if recommendation.career_path %}
+                <div class="collapsible-section">
+                    <button class="collapsible">
+                        <i class="fas fa-road"></i> Career Path
+                        <span class="toggle-icon"><i class="fas fa-chevron-down"></i></span>
+                    </button>
+                    <div class="collapsible-content">
+                        <div class="career-path">
+                            <h4>Your Career Journey</h4>
+                            <div class="career-steps">
+                                <div class="career-step">
+                                    <div class="step-icon">1</div>
+                                    <div class="step-content">
+                                        <span class="step-title">Internship</span>
+                                        <span class="step-description">{{ recommendation.title }}</span>
+                                    </div>
+                                </div>
+                                <div class="career-step">
+                                    <div class="step-icon">2</div>
+                                    <div class="step-content">
+                                        <span class="step-title">Entry Level</span>
+                                        <span class="step-description">{{ recommendation.career_path.Role_1 }}</span>
+                                    </div>
+                                </div>
+                                <div class="career-step">
+                                    <div class="step-icon">3</div>
+                                    <div class="step-content">
+                                        <span class="step-title">Mid Level</span>
+                                        <span class="step-description">{{ recommendation.career_path.Role_2 }}</span>
+                                    </div>
+                                </div>
+                                <div class="career-step">
+                                    <div class="step-icon">4</div>
+                                    <div class="step-content">
+                                        <span class="step-title">Senior Level</span>
+                                        <span class="step-description">{{ recommendation.career_path.Role_3 }}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <div class="feedback-section">
+        <h3>Was this recommendation helpful?</h3>
+        <form action="{{ url_for('main.feedback') }}" method="post" class="feedback-form">
+            <div class="rating">
+                <input type="radio" id="star5" name="rating" value="5">
+                <label for="star5"></label>
+                <input type="radio" id="star4" name="rating" value="4">
+                <label for="star4"></label>
+                <input type="radio" id="star3" name="rating" value="3">
+                <label for="star3"></label>
+                <input type="radio" id="star2" name="rating" value="2">
+                <label for="star2"></label>
+                <input type="radio" id="star1" name="rating" value="1">
+                <label for="star1"></label>
+            </div>
+            <div class="feedback-comment">
+                <textarea name="comment" placeholder="Any additional feedback? (optional)"></textarea>
+            </div>
+            <button type="submit" class="btn secondary-btn">Submit Feedback</button>
+        </form>
+    </div>
+
+    <div class="action-buttons">
+        <a href="{{ url_for('main.index') }}" class="btn secondary-btn">
+            <i class="fas fa-arrow-left"></i> Search Again
+        </a>
+    </div>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Initialize collapsible sections
+        const collapsibles = document.querySelectorAll('.collapsible');
+        collapsibles.forEach(collapsible => {
+            collapsible.addEventListener('click', function() {
+                this.classList.toggle('active');
+                const content = this.nextElementSibling;
+                if (content.style.maxHeight) {
+                    content.style.maxHeight = null;
+                } else {
+                    content.style.maxHeight = content.scrollHeight + 'px';
+                }
+            });
+        });
+    });
+</script>
+{% endblock %}
