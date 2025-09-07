@@ -180,9 +180,17 @@ def find_missing_skills(candidate_skills, internship_skills):
         return []
 
 def get_recommendations(candidate, internships_df, location_df):
-    """Get internship recommendations for a candidate"""
+    """Get internship recommendations for a candidate based on the system flow diagram
+    
+    1. Process user inputs (skills, sector, location, text)
+    2. Calculate matches with available internships
+    3. Score and rank internships
+    4. Generate personalized recommendations with explanations
+    5. Identify skill gaps and growth opportunities
+    """
     recommendations = []
     
+    # Step 1: Process user inputs
     # Ensure candidate dictionary has required keys
     if not isinstance(candidate, dict):
         print(f"Error: candidate must be a dictionary, got {type(candidate)}")
@@ -193,16 +201,19 @@ def get_recommendations(candidate, internships_df, location_df):
         'skills': [],
         'sector': '',
         'location': '',
-        'full_text': ''
+        'full_text': '',
+        'education': ''
     }
     
     # Update with actual values
     for key, default_value in default_candidate.items():
         if key not in candidate or candidate[key] is None:
             candidate[key] = default_value
-    
+            
+    # Step 2: Calculate matches with available internships
     for _, internship in internships_df.iterrows():
         try:
+            # Calculate different match scores
             scores = {
                 'skill_match': calculate_skill_match(candidate['skills'], internship['Skills_Required']),
                 'sector_match': calculate_sector_match(candidate.get('sector', ''), internship['Sector']),
@@ -210,27 +221,30 @@ def get_recommendations(candidate, internships_df, location_df):
                 'text_similarity': calculate_text_similarity(candidate.get('full_text', ''), internship['Description'])
             }
             
-            # Calculate total score using weighted formula
-            total_score = (scores['skill_match'] * 2) + \
+            # Step 3: Score and rank internships
+            # Calculate total score using weighted formula based on importance
+            total_score = (scores['skill_match'] * 2.5) + \
                         (scores['sector_match'] * 2) + \
-                        (scores['location_match'] * 1) + \
-                        (scores['text_similarity'] * 3)
+                        (scores['location_match'] * 1.5) + \
+                        (scores['text_similarity'] * 1)
             
-            # Generate reason for recommendation
+            # Step 4: Generate personalized recommendations with explanations
             reason = generate_reason(candidate, internship, scores)
             
-            # Find missing skills
+            # Step 5: Identify skill gaps and growth opportunities
             missing_skills = find_missing_skills(candidate['skills'], internship['Skills_Required'])
         except Exception as e:
             print(f"Error processing internship {internship.get('ID', 'unknown')}: {e}")
             continue
         
+        # Add to recommendations list with all calculated data
         recommendations.append({
             'internship': internship,
             'scores': scores,
             'total_score': total_score,
             'reason': reason,
-            'missing_skills': missing_skills
+            'missing_skills': missing_skills,
+            'education_fit': True if candidate['education'] else False  # Simple education fit check
         })
     
     # Sort recommendations by total score

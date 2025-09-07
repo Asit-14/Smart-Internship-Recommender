@@ -29,8 +29,16 @@ def index():
 
 @main.route('/form-submit', methods=['POST'])
 def form_submit():
-    """Process form submission"""
+    """
+    Process form submission.
+    Following the flow:
+    1. Collect form input
+    2. Validate input
+    3. Generate recommendations using the integrated process
+    4. Format and display recommendations
+    """
     try:
+        # Collect form data
         form_data = {
             'skills': request.form.getlist('skills'),
             'sector': request.form.get('sector'),
@@ -46,14 +54,14 @@ def form_submit():
         # Store form data in session for later use
         session['form_data'] = form_data
         
-        # Get recommendations
-        recommendations = service.get_recommendations_from_form(form_data)
+        # Get recommendations using the integrated process
+        recommendations = service.integrated_recommendation_process(form_data, input_type='form')
         
         if not recommendations:
             flash('No matching internships found. Please try different criteria.', 'warning')
             return redirect(url_for('main.index'))
         
-        # Store recommendations in session
+        # Format recommendations for the session
         session['recommendations'] = [
             {
                 'id': rec['internship'].get('ID', ''),
@@ -72,6 +80,7 @@ def form_submit():
             for rec in recommendations
         ]
         
+        print(f"Form submission processed, {len(recommendations)} recommendations found")
         return redirect(url_for('main.recommendations'))
     except Exception as e:
         print(f"Error processing form submission: {e}")
@@ -80,18 +89,29 @@ def form_submit():
 
 @main.route('/resume-submit', methods=['POST'])
 def resume_submit():
-    """Process resume submission"""
+    """
+    Process resume submission.
+    Following the flow:
+    1. Resume Upload
+    2. File Validation
+    3. Resume Parsing
+    4. Candidate Profile Creation
+    5. Recommendation Generation
+    """
     try:
+        # Check if resume file exists in the request
         if 'resume' not in request.files:
             flash('No file part', 'error')
             return redirect(url_for('main.index'))
         
         file = request.files['resume']
         
+        # Check if file was selected
         if file.filename == '':
             flash('No selected file', 'error')
             return redirect(url_for('main.index'))
         
+        # Validate file type
         if file and allowed_file(file.filename):
             try:
                 # Process the resume
@@ -108,14 +128,14 @@ def resume_submit():
                     'locations': resume_data.get('locations', [])
                 }
                 
-                # Get recommendations
-                recommendations = service.get_recommendations_from_resume(resume_data)
+                # Use integrated recommendation process
+                recommendations = service.integrated_recommendation_process(resume_data, input_type='resume')
                 
                 if not recommendations:
                     flash('No matching internships found. Try uploading a different resume or filling out the form.', 'warning')
                     return redirect(url_for('main.index'))
                 
-                # Store recommendations in session
+                # Format recommendations for the session
                 session['recommendations'] = [
                     {
                         'id': rec['internship'].get('ID', ''),
@@ -134,6 +154,7 @@ def resume_submit():
                     for rec in recommendations
                 ]
                 
+                print(f"Resume processed successfully, found {len(recommendations)} recommendations")
                 return redirect(url_for('main.recommendations'))
             except Exception as e:
                 print(f"Error processing resume: {e}")
@@ -149,24 +170,35 @@ def resume_submit():
 
 @main.route('/recommendations', methods=['GET'])
 def recommendations():
-    """Render the recommendations page"""
+    """
+    Render the recommendations page.
+    Following the flow:
+    1. Retrieve recommendations
+    2. Format for display
+    3. Show recommendations with career paths and skill development resources
+    """
     try:
+        # Get recommendations from session
         recommendations = session.get('recommendations', [])
         
         if not recommendations:
             flash('No recommendations found. Please fill out the form or upload a resume.', 'warning')
             return redirect(url_for('main.index'))
         
-        # Validate that recommendations have the required structure
+        # Validate and process recommendations for display
         valid_recommendations = []
         for rec in recommendations:
             if isinstance(rec, dict) and 'title' in rec and 'description' in rec:
+                # Add any additional processing here if needed
                 valid_recommendations.append(rec)
         
         if not valid_recommendations:
             flash('Invalid recommendation data. Please try again.', 'warning')
             return redirect(url_for('main.index'))
         
+        print(f"Displaying {len(valid_recommendations)} recommendations")
+        
+        # Render template with recommendations
         return render_template('recommendations.html', recommendations=valid_recommendations)
     except Exception as e:
         print(f"Error displaying recommendations: {e}")
@@ -186,7 +218,14 @@ def feedback():
 
 @main.route('/voice-input', methods=['POST'])
 def voice_input():
-    """Handle voice input and extract information from spoken text"""
+    """
+    Handle voice input and extract information from spoken text.
+    Following the flow:
+    1. Receive voice input
+    2. Process speech to text
+    3. Extract information (skills, sector, location)
+    4. Generate recommendations using the integrated process
+    """
     try:
         # Handle both JSON and form data for flexibility
         if request.is_json:
@@ -201,79 +240,22 @@ def voice_input():
                 flash('No speech text provided', 'error')
                 return redirect(url_for('main.index'))
         
-        print(f"Processing voice input: {text}")
-        
-        # Initialize service if needed
-        sectors_df = service.sectors_df
-        locations_df = service.locations_df
-        skills_df = service.skills_df
-        
-        # Extract sector information
-        sector = ''
-        for idx, row in sectors_df.iterrows():
-            sector_name = str(row['Category']).lower()
-            if sector_name in text.lower():
-                sector = row['Category']
-                break
-        
-        # Extract location information
-        location = ''
-        for idx, row in locations_df.iterrows():
-            # Check for city names
-            city_name = str(row['City']).lower()
-            if city_name in text.lower():
-                location = row['City']
-                break
-            
-            # Check for state names
-            state_name = str(row['State']).lower()
-            if state_name in text.lower():
-                location = row['State']
-                break
-        
-        # Extract skills
-        skills = []
-        for idx, row in skills_df.iterrows():
-            skill_name = str(row['Skill']).lower()
-            if skill_name in text.lower():
-                skills.append(row['Skill'])
-        
-        # Add some common skills detection
-        common_skills = {
-            'programming': ['programming', 'coding', 'developer', 'software'],
-            'writing': ['writing', 'content', 'article', 'blog'],
-            'design': ['design', 'graphic', 'ui', 'ux', 'interface'],
-            'data analysis': ['data', 'analysis', 'analytics', 'statistics'],
-            'marketing': ['marketing', 'social media', 'digital marketing'],
-            'teaching': ['teaching', 'education', 'tutoring', 'mentor']
-        }
-        
-        for skill, keywords in common_skills.items():
-            for keyword in keywords:
-                if keyword in text.lower() and skill not in skills:
-                    skills.append(skill)
-                    break
+        print(f"Voice input received: {text}")
         
         # Handle form submission directly if it's not a JSON request
         if not request.is_json:
-            form_data = {
-                'sector': sector,
-                'location': location,
-                'skills': skills,
-                'education': 'Graduate'  # Default value
-            }
-            
-            # Store form data in session
-            session['form_data'] = form_data
-            
-            # Get recommendations
-            recommendations = service.get_recommendations_from_form(form_data)
+            # Use the integrated recommendation process directly with the voice text
+            recommendations = service.integrated_recommendation_process(text, input_type='voice')
             
             if not recommendations:
                 flash('No matching internships found. Please try different criteria.', 'warning')
                 return redirect(url_for('main.index'))
             
-            # Store recommendations in session
+            # Process voice input to get extracted data for session storage
+            extracted_data = service.process_voice_input(text)
+            session['form_data'] = extracted_data
+            
+            # Format recommendations for the session
             session['recommendations'] = [
                 {
                     'id': rec['internship'].get('ID', ''),
@@ -292,13 +274,17 @@ def voice_input():
                 for rec in recommendations
             ]
             
+            print(f"Voice input processed, found {len(recommendations)} recommendations")
             return redirect(url_for('main.recommendations'))
         else:
-            # Return JSON response for API/AJAX calls
+            # For AJAX/API calls, just return the extracted information
+            extracted_data = service.process_voice_input(text)
+            
+            # Return JSON response
             result = {
-                'sector': sector,
-                'location': location,
-                'skills': skills,
+                'sector': extracted_data['sector'],
+                'location': extracted_data['location'],
+                'skills': extracted_data['skills'],
                 'text': text  # Return the original text for reference
             }
             
