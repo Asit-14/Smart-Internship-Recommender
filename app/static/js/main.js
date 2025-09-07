@@ -337,7 +337,7 @@ function initializeSkillsSelector() {
     });
 }
 
-// Form Validation
+// Enhanced Form validation with error handling
 function initializeFormValidation() {
     const forms = document.querySelectorAll('form');
     forms.forEach(form => {
@@ -350,19 +350,65 @@ function initializeFormValidation() {
 }
 
 function validateForm(form) {
-    const requiredFields = form.querySelectorAll('[required]');
     let isValid = true;
+    const requiredFields = form.querySelectorAll('[required]');
     
     requiredFields.forEach(field => {
         if (!field.value.trim()) {
-            field.classList.add('error');
+            showFieldError(field, 'This field is required');
             isValid = false;
         } else {
-            field.classList.remove('error');
+            clearFieldError(field);
         }
     });
     
+    // Custom validation for recommendation form
+    if (form.id === 'recommendation-form') {
+        const skills = form.querySelectorAll('input[name="skills"]');
+        const sector = form.querySelector('select[name="sector"]');
+        const location = form.querySelector('select[name="location"]');
+        
+        if (skills.length === 0 && !sector.value && !location.value) {
+            showFormError(form, 'Please provide at least one preference (skills, sector, or location)');
+            isValid = false;
+        }
+    }
+    
     return isValid;
+}
+
+function showFieldError(field, message) {
+    clearFieldError(field);
+    
+    const errorElement = document.createElement('div');
+    errorElement.className = 'field-error';
+    errorElement.textContent = message;
+    errorElement.style.color = '#e74c3c';
+    errorElement.style.fontSize = '0.8em';
+    errorElement.style.marginTop = '2px';
+    
+    field.classList.add('error');
+    field.parentNode.appendChild(errorElement);
+}
+
+function clearFieldError(field) {
+    field.classList.remove('error');
+    const existingError = field.parentNode.querySelector('.field-error');
+    if (existingError) {
+        existingError.remove();
+    }
+}
+
+function showFormError(form, message) {
+    let errorContainer = form.querySelector('.form-error');
+    
+    if (!errorContainer) {
+        errorContainer = document.createElement('div');
+        errorContainer.className = 'form-error';
+        form.insertBefore(errorContainer, form.firstChild);
+    }
+    
+    errorContainer.innerHTML = `<p style="color: #e74c3c; margin: 10px 0; padding: 10px; background: #fdf2f2; border: 1px solid #fbb6b6; border-radius: 4px;">${message}</p>`;
 }
 
 // Feedback System
@@ -408,11 +454,146 @@ function switchTab(tabId) {
     document.querySelector(`.tab-btn[onclick="switchTab('${tabId}')"]`).classList.add('active');
 }
 
+// Enhanced Utility Functions
+function showLoadingState(show) {
+    const loadingElements = document.querySelectorAll('.loading');
+    loadingElements.forEach(el => {
+        el.style.display = show ? 'block' : 'none';
+    });
+    
+    const submitButtons = document.querySelectorAll('button[type="submit"]');
+    submitButtons.forEach(btn => {
+        btn.disabled = show;
+        if (show) {
+            btn.dataset.originalText = btn.textContent;
+            btn.textContent = 'Processing...';
+        } else {
+            btn.textContent = btn.dataset.originalText || btn.textContent;
+        }
+    });
+}
+
+function showNotification(message, type = 'info') {
+    const notification = document.createElement('div');
+    notification.className = `notification notification-${type}`;
+    notification.innerHTML = `
+        <span>${message}</span>
+        <button onclick="this.parentElement.remove()" class="close-btn">&times;</button>
+    `;
+    
+    let container = document.getElementById('notifications');
+    if (!container) {
+        container = document.createElement('div');
+        container.id = 'notifications';
+        container.className = 'notifications-container';
+        document.body.appendChild(container);
+    }
+    
+    container.appendChild(notification);
+    
+    setTimeout(() => {
+        if (notification.parentElement) {
+            notification.remove();
+        }
+    }, 5000);
+}
+
+function makeAPIRequest(url, options = {}) {
+    return fetch(url, {
+        headers: {
+            'Content-Type': 'application/json',
+            ...options.headers
+        },
+        ...options
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return response.json();
+    });
+}
+
+// Voice Input Enhancement
+function enhanceVoiceInput() {
+    const voiceBtn = document.getElementById('voice-btn');
+    
+    if (voiceBtn && 'webkitSpeechRecognition' in window) {
+        const recognition = new webkitSpeechRecognition();
+        recognition.continuous = false;
+        recognition.interimResults = false;
+        recognition.lang = 'en-IN';
+        
+        voiceBtn.addEventListener('click', function() {
+            if (this.classList.contains('recording')) {
+                recognition.stop();
+            } else {
+                recognition.start();
+            }
+        });
+        
+        recognition.onstart = function() {
+            voiceBtn.classList.add('recording');
+            voiceBtn.textContent = 'Listening...';
+        };
+        
+        recognition.onresult = function(event) {
+            const result = event.results[0][0].transcript;
+            const voiceTextInput = document.getElementById('voice-text');
+            if (voiceTextInput) {
+                voiceTextInput.value = result;
+                const form = voiceTextInput.closest('form');
+                if (form) {
+                    form.dispatchEvent(new Event('submit'));
+                }
+            }
+        };
+        
+        recognition.onend = function() {
+            voiceBtn.classList.remove('recording');
+            voiceBtn.textContent = 'Start Voice Input';
+        };
+        
+        recognition.onerror = function(event) {
+            console.error('Speech recognition error:', event.error);
+            showNotification('Voice recognition error. Please try again.', 'error');
+            voiceBtn.classList.remove('recording');
+            voiceBtn.textContent = 'Start Voice Input';
+        };
+    }
+}
+
+// Mobile Touch Features
+function initializeMobileFeatures() {
+    const cards = document.querySelectorAll('.internship-card, .skill-chip');
+    
+    cards.forEach(card => {
+        card.addEventListener('touchstart', function() {
+            this.classList.add('touched');
+        });
+        
+        card.addEventListener('touchend', function() {
+            setTimeout(() => {
+                this.classList.remove('touched');
+            }, 150);
+        });
+    });
+}
+
 // Initialize when DOM is loaded
 document.addEventListener('DOMContentLoaded', function() {
     console.log('DOM loaded, initializing app...');
     initializeApp();
+    enhanceVoiceInput();
+    initializeMobileFeatures();
 });
+
+// Export functions globally
+window.SmartInternshipRecommender = {
+    showNotification: showNotification,
+    makeAPIRequest: makeAPIRequest,
+    showLoadingState: showLoadingState
+};
 
 // Global functions for HTML onclick handlers
 window.switchTab = switchTab;

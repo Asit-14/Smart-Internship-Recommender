@@ -272,78 +272,6 @@ class InternshipService:
         except Exception as e:
             print(f"Error processing resume data: {e}")
             return []
-    
-    def process_voice_input(self, voice_text):
-        """
-        Process voice input and extract relevant information
-        Following the process flow:
-        1. Voice Input Recognition
-        2. Natural Language Processing
-        3. Extract Skills, Sector, Location
-        4. Build Candidate Profile
-        """
-        print(f"Processing voice input: {voice_text}")
-        
-        # Initialize result dictionary
-        extracted_data = {
-            'skills': [],
-            'sector': '',
-            'location': '',
-            'education': 'Graduate'  # Default value
-        }
-        
-        try:
-            # Extract sector information
-            for idx, row in self.sectors_df.iterrows():
-                sector_name = str(row['Sector']).lower()
-                if sector_name in voice_text.lower():
-                    extracted_data['sector'] = row['Sector']
-                    break
-            
-            # Extract location information
-            for idx, row in self.locations_df.iterrows():
-                # Check for city names
-                city_name = str(row['City']).lower()
-                if city_name in voice_text.lower():
-                    extracted_data['location'] = row['City']
-                    break
-                
-                # Check for state names
-                state_name = str(row['State']).lower()
-                if state_name in voice_text.lower():
-                    extracted_data['location'] = row['State']
-                    break
-            
-            # Extract skills
-            for idx, row in self.skills_df.iterrows():
-                skill_name = str(row['Skill']).lower()
-                if skill_name in voice_text.lower():
-                    extracted_data['skills'].append(row['Skill'])
-            
-            # Add common skills detection
-            common_skills = {
-                'programming': ['programming', 'coding', 'developer', 'software'],
-                'writing': ['writing', 'content', 'article', 'blog'],
-                'design': ['design', 'graphic', 'ui', 'ux', 'interface'],
-                'data analysis': ['data', 'analysis', 'analytics', 'statistics'],
-                'marketing': ['marketing', 'social media', 'digital marketing'],
-                'teaching': ['teaching', 'education', 'tutoring', 'mentor']
-            }
-            
-            for skill, keywords in common_skills.items():
-                for keyword in keywords:
-                    if keyword in voice_text.lower() and skill not in extracted_data['skills']:
-                        extracted_data['skills'].append(skill)
-                        break
-            
-            print(f"Extracted data from voice: sector={extracted_data['sector']}, "
-                  f"location={extracted_data['location']}, skills={extracted_data['skills']}")
-            
-            return extracted_data
-            
-        except Exception as e:
-            print(f"Error processing voice input: {e}")
-            return extracted_data
 
     def integrated_recommendation_process(self, input_data, input_type='form'):
         """
@@ -377,17 +305,16 @@ class InternshipService:
                 }
             elif input_type == 'resume':
                 # Extract from resume data
+                locations_list = input_data.get('locations', [])
+                education_list = input_data.get('education', [])
+                
                 candidate = {
                     'skills': input_data.get('skills', []),
                     'sector': input_data.get('sector', ''),
-                    'location': input_data.get('locations', [''])[0] if isinstance(input_data.get('locations', []), list) else '',
-                    'education': input_data.get('education', [''])[0] if isinstance(input_data.get('education', []), list) else '',
+                    'location': locations_list[0] if locations_list and len(locations_list) > 0 else '',
+                    'education': education_list[0] if education_list and len(education_list) > 0 else '',
                     'full_text': input_data.get('full_text', '')
                 }
-            elif input_type == 'voice':
-                # Process voice input
-                extracted_data = self.process_voice_input(input_data)
-                candidate = extracted_data
             
             print(f"Candidate profile created with {len(candidate.get('skills', []))} skills")
             
@@ -429,3 +356,98 @@ class InternshipService:
         # For now, we'll just print it
         print(f"Feedback received: {feedback_data}")
         return True
+    
+    def get_top_matches(self, user_profile, top_n=5):
+        """
+        Get top matching internships for a user profile.
+        This is the main matching function that integrates all recommendation logic.
+        
+        Args:
+            user_profile (dict): User profile containing skills, education, sector, location
+            top_n (int): Number of top recommendations to return
+            
+        Returns:
+            list: Top matching internships with scores and explanations
+        """
+        try:
+            print(f"Getting top {top_n} matches for user profile")
+            
+            # Use the integrated recommendation process
+            recommendations = self.integrated_recommendation_process(user_profile, input_type='profile')
+            
+            # Return only the requested number of recommendations
+            return recommendations[:top_n] if recommendations else []
+            
+        except Exception as e:
+            print(f"Error getting top matches: {e}")
+            return []
+    
+    def load_internship_data(self):
+        """
+        Reload internship data from CSV files.
+        Useful for refreshing data without restarting the application.
+        """
+        try:
+            self.internships_df = pd.read_csv(os.path.join(self.data_dir, 'internships.csv'))
+            print(f"Reloaded {len(self.internships_df)} internships")
+            return True
+        except Exception as e:
+            print(f"Error reloading internship data: {e}")
+            return False
+    
+    def get_internship_by_id(self, internship_id):
+        """
+        Get a specific internship by its ID.
+        
+        Args:
+            internship_id (str): The internship ID
+            
+        Returns:
+            dict: Internship details or None if not found
+        """
+        try:
+            internship = self.internships_df[self.internships_df['ID'] == str(internship_id)]
+            if not internship.empty:
+                return internship.iloc[0].to_dict()
+            return None
+        except Exception as e:
+            print(f"Error getting internship by ID {internship_id}: {e}")
+            return None
+    
+    def search_internships(self, query, filters=None):
+        """
+        Search internships by query and optional filters.
+        
+        Args:
+            query (str): Search query
+            filters (dict): Optional filters for sector, location, etc.
+            
+        Returns:
+            list: Matching internships
+        """
+        try:
+            df = self.internships_df.copy()
+            
+            # Apply filters if provided
+            if filters:
+                if 'sector' in filters and filters['sector']:
+                    df = df[df['Sector'].str.contains(filters['sector'], case=False, na=False)]
+                if 'location' in filters and filters['location']:
+                    df = df[df['Location'].str.contains(filters['location'], case=False, na=False)]
+                if 'education' in filters and filters['education']:
+                    df = df[df['Education_Required'].str.contains(filters['education'], case=False, na=False)]
+            
+            # Search in title and description
+            if query:
+                query_mask = (
+                    df['Title'].str.contains(query, case=False, na=False) |
+                    df['Description'].str.contains(query, case=False, na=False) |
+                    df['Skills_Required'].str.contains(query, case=False, na=False)
+                )
+                df = df[query_mask]
+            
+            return df.to_dict('records')
+            
+        except Exception as e:
+            print(f"Error searching internships: {e}")
+            return []

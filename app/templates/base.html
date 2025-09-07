@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}PM Internship Recommender{% endblock %}</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/enhanced.css') }}">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
     {% block head %}{% endblock %}
@@ -19,11 +20,17 @@
                 <h1 data-i18n="header.title">PM Internship Recommender</h1>
                 <p data-i18n="header.tagline">Find the perfect internship for your career</p>
             </div>
-            <div class="language-toggle">
-                <button id="lang-toggle">
-                    <span id="lang-text">हिंदी</span>
-                    <i class="fas fa-language"></i>
-                </button>
+            <div class="language-selector">
+                <div class="dropdown">
+                    <button class="dropdown-btn" id="language-dropdown-btn">
+                        <span id="current-lang-text">English</span>
+                        <i class="fas fa-language"></i>
+                        <i class="fas fa-chevron-down"></i>
+                    </button>
+                    <div class="dropdown-content" id="language-dropdown">
+                        <!-- Language options will be populated by JavaScript -->
+                    </div>
+                </div>
             </div>
         </div>
     </header>
@@ -77,19 +84,6 @@
 
     <!-- JavaScript -->
     <script src="{{ url_for('static', filename='js/main.js') }}"></script>
-    <script>
-        // Initialize language support when the page loads
-        document.addEventListener('DOMContentLoaded', function() {
-            // Initialize language
-            initializeLanguage();
-            
-            // Set up manual click handler for the language toggle button
-            document.getElementById('lang-toggle').onclick = function(event) {
-                event.preventDefault();
-                toggleLanguage();
-            };
-        });
-    </script>
     {% block scripts %}{% endblock %}
 </body>
 </html>

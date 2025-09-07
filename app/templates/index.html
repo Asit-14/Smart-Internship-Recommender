@@ -14,7 +14,6 @@
     <div class="tabs">
         <button class="tab-btn active" onclick="switchTab('form-tab')" data-i18n="tabs.form">Fill Form</button>
         <button class="tab-btn" onclick="switchTab('resume-tab')" data-i18n="tabs.resume">Upload Resume</button>
-        <button class="tab-btn" onclick="switchTab('voice-tab')" data-i18n="tabs.voice">Voice Input</button>
     </div>
 
     <div class="tab-content" id="form-tab">
@@ -83,68 +82,6 @@
                 <button type="submit" class="btn primary-btn" data-i18n="resume.submit">Analyze Resume</button>
             </div>
         </form>
-    </div>
-
-    <div class="tab-content" id="voice-tab" style="display: none;">
-        <div class="voice-input-container">
-            <div class="voice-instruction">
-                <h3 data-i18n="voice.instruction">Speak Your Preferences</h3>
-                <p data-i18n="voice.subtitle">You can mention any of the following information:</p>
-                <ul>
-                    <li><strong data-i18n="voice.skills">Skills:</strong> Programming, Data Analysis, Marketing, Design, etc.</li>
-                    <li><strong data-i18n="voice.sector">Sector:</strong> IT, Education, Healthcare, Finance, etc.</li>
-                    <li><strong data-i18n="voice.location">Location:</strong> Delhi, Mumbai, Patna, Bengaluru, etc.</li>
-                </ul>
-                <p data-i18n="voice.examples">Examples:</p>
-                <blockquote data-i18n="voice.example1">"I want a teaching internship in Patna"</blockquote>
-                <blockquote data-i18n="voice.example2">"I'm looking for IT internship in Bengaluru with programming skills"</blockquote>
-                <blockquote data-i18n="voice.example3">"I have skills in data analysis and I'm interested in finance sector"</blockquote>
-            </div>
-
-            <!-- JavaScript voice recognition -->
-            <div class="voice-control">
-                <button id="start-voice" class="voice-btn" type="button">
-                    <i class="fas fa-microphone"></i>
-                    <span data-i18n="voice.button">Tap to Speak</span>
-                </button>
-                <div class="voice-status" id="voice-status"></div>
-            </div>
-
-            <div class="voice-result" id="voice-result" style="display: none;">
-                <h3 data-i18n="voice.understood">I understood:</h3>
-                <p class="voice-transcript"><span id="voice-text"></span></p>
-                
-                <h3 data-i18n="voice.extracted">Information Extracted:</h3>
-                <div id="voice-form-data" class="voice-extracted-data"></div>
-                
-                <div class="voice-actions">
-                    <button id="voice-retry" class="btn secondary-btn" type="button">
-                        <i class="fas fa-redo"></i> <span data-i18n="voice.retry">Try Again</span>
-                    </button>
-                    <button id="voice-submit" class="btn primary-btn" type="button">
-                        <i class="fas fa-search"></i> <span data-i18n="voice.submit">Get Recommendations</span>
-                    </button>
-                </div>
-            </div>
-            
-            <!-- Fallback for users without JavaScript -->
-            <noscript>
-                <div class="noscript-warning">
-                    <p data-i18n="voice.noscript">Voice input requires JavaScript. Please enable JavaScript or use the text input below.</p>
-                </div>
-                <form action="{{ url_for('main.voice_input') }}" method="post" class="fallback-voice-form">
-                    <div class="form-group">
-                        <label for="voice_text" data-i18n="voice.fallback_label">Type your preferences:</label>
-                        <textarea id="voice_text" name="voice_text" rows="3" 
-                                  data-i18n="voice.fallback_placeholder" placeholder="Example: I want an IT internship in Delhi with programming skills" 
-                                  required></textarea>
-                    </div>
-                    <div class="form-action">
-                        <button type="submit" class="btn primary-btn" data-i18n="form.submit">Get Recommendations</button>
-                    </div>
-                </form>
-            </noscript>
-        </div>
     </div>
 </section>
 
