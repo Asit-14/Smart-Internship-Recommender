@@ -9,8 +9,7 @@
   },
   "tabs": {
     "form": "Fill Form",
-    "resume": "Upload Resume",
-    "voice": "Voice Input"
+    "resume": "Upload Resume"
   },
   "form": {
     "education": {
@@ -35,26 +34,6 @@
     "label": "Upload your resume (PDF or DOCX)",
     "placeholder": "Choose a file",
     "submit": "Analyze Resume"
-  },
-  "voice": {
-    "instruction": "Speak Your Preferences",
-    "subtitle": "You can mention any of the following information:",
-    "skills": "Skills:",
-    "sector": "Sector:",
-    "location": "Location:",
-    "examples": "Examples:",
-    "example1": "I want a teaching internship in Patna",
-    "example2": "I'm looking for IT internship in Bengaluru with programming skills",
-    "example3": "I have skills in data analysis and I'm interested in finance sector",
-    "button": "Tap to Speak",
-    "listening": "Listening...",
-    "understood": "I understood:",
-    "extracted": "Information Extracted:",
-    "retry": "Try Again",
-    "submit": "Get Recommendations",
-    "noscript": "Voice input requires JavaScript. Please enable JavaScript or use the text input below.",
-    "fallback_label": "Type your preferences:",
-    "fallback_placeholder": "Example: I want an IT internship in Delhi with programming skills"
   },
   "features": {
     "title": "Why Use PM Internship Recommender?",
