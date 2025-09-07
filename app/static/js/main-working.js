@@ -1,5 +1,3 @@
-// Enhanced Smart Internship Recommender JavaScript
-
 // Global variables
 let translations = {};
 let currentLanguage = 'en';
@@ -18,41 +16,33 @@ let availableLanguages = [
     { code: 'te', name: 'Telugu', nativeName: 'తెలుగు', rtl: false },
     { code: 'ur', name: 'Urdu', nativeName: 'اردو', rtl: true }
 ];
-let skillsData = {};
 
-// Initialize the app
+// Initialize app
 function initializeApp() {
     console.log('Initializing Smart Internship Recommender...');
-    
-    // Initialize components
     initializeSkillsSelector();
     initializeFormValidation();
     initializeFeedbackSystem();
     initializeSearchFeatures();
-    
-    // Initialize language system
-    initializeLanguage();
-    initializeLanguageDropdown();
-    
-    console.log('Smart Internship Recommender initialized successfully');
+    console.log('Smart Internship Recommender initialized');
 }
 
-// Language Functions
+// Language switching functionality
 function initializeLanguage() {
-    console.log('Starting language initialization...');
+    console.log('Initializing language system...');
     
     // Get stored language preference
     currentLanguage = localStorage.getItem('preferredLanguage') || 'en';
-    console.log('Current language:', currentLanguage);
-    
-    // Set HTML attributes
     document.documentElement.lang = currentLanguage;
     
-    // Load translations and update UI
-    loadAndApplyTranslations(currentLanguage);
+    // Update dropdown display
     updateLanguageDropdownDisplay();
+    
+    // Load and apply translations
+    loadAndApplyTranslations(currentLanguage);
 }
 
+// Initialize language dropdown
 function initializeLanguageDropdown() {
     console.log('Setting up language dropdown...');
     
@@ -60,19 +50,18 @@ function initializeLanguageDropdown() {
     const dropdown = document.getElementById('language-dropdown');
     
     if (!dropdownBtn || !dropdown) {
-        console.warn('Language dropdown elements not found');
+        console.error('Language dropdown elements not found');
         return;
     }
     
     // Populate dropdown
     populateLanguageDropdown();
     
-    // Add click handler for dropdown button
+    // Add click handler
     dropdownBtn.addEventListener('click', function(e) {
         e.preventDefault();
         e.stopPropagation();
         dropdown.classList.toggle('show');
-        console.log('Dropdown toggled');
     });
     
     // Close dropdown when clicking outside
@@ -85,6 +74,7 @@ function initializeLanguageDropdown() {
     console.log('Language dropdown initialized');
 }
 
+// Populate language dropdown
 function populateLanguageDropdown() {
     const dropdown = document.getElementById('language-dropdown');
     if (!dropdown) return;
@@ -109,17 +99,17 @@ function populateLanguageDropdown() {
         
         dropdown.appendChild(option);
     });
-    
-    console.log('Language dropdown populated with', availableLanguages.length, 'options');
 }
 
+// Switch to specific language
 function switchToLanguage(langCode) {
-    console.log('Switching to language:', langCode);
+    console.log(`Switching to language: ${langCode}`);
     
     currentLanguage = langCode;
     localStorage.setItem('preferredLanguage', langCode);
+    document.documentElement.lang = langCode;
     
-    // Handle RTL languages
+    // Handle RTL
     const langConfig = availableLanguages.find(lang => lang.code === langCode);
     if (langConfig && langConfig.rtl) {
         document.documentElement.dir = 'rtl';
@@ -129,15 +119,14 @@ function switchToLanguage(langCode) {
         document.body.classList.remove('rtl');
     }
     
-    document.documentElement.lang = langCode;
-    
-    // Update UI
+    // Update display
     updateLanguageDropdownDisplay();
-    loadAndApplyTranslations(langCode);
     
-    console.log('Language switched to:', langCode);
+    // Load translations
+    loadAndApplyTranslations(langCode);
 }
 
+// Update language dropdown display
 function updateLanguageDropdownDisplay() {
     const currentLangText = document.getElementById('current-lang-text');
     if (!currentLangText) return;
@@ -157,8 +146,9 @@ function updateLanguageDropdownDisplay() {
     });
 }
 
+// Load and apply translations
 function loadAndApplyTranslations(lang) {
-    console.log('Loading translations for:', lang);
+    console.log(`Loading translations for: ${lang}`);
     
     fetch(`/static/locales/${lang}.json?t=${new Date().getTime()}`)
         .then(response => {
@@ -169,7 +159,7 @@ function loadAndApplyTranslations(lang) {
         })
         .then(data => {
             translations = data;
-            console.log('Translations loaded successfully');
+            console.log(`Translations loaded for ${lang}`);
             applyTranslations();
         })
         .catch(error => {
@@ -177,29 +167,17 @@ function loadAndApplyTranslations(lang) {
         });
 }
 
+// Apply translations to elements
 function applyTranslations() {
-    if (!translations || Object.keys(translations).length === 0) {
-        console.warn('No translations available');
-        return;
-    }
+    if (!translations) return;
     
     const elements = document.querySelectorAll('[data-i18n]');
-    console.log('Applying translations to', elements.length, 'elements');
     
     elements.forEach(element => {
-        try {
-            const key = element.getAttribute('data-i18n');
-            const parts = key.split('.');
-            
-            let value = translations;
-            for (const part of parts) {
-                if (!value || !value[part]) {
-                    console.warn('Translation key not found:', key);
-                    return;
-                }
-                value = value[part];
-            }
-            
+        const key = element.getAttribute('data-i18n');
+        const value = getNestedValue(translations, key);
+        
+        if (value) {
             if (element.tagName === 'INPUT' || element.tagName === 'TEXTAREA') {
                 if (element.hasAttribute('placeholder')) {
                     element.setAttribute('placeholder', value);
@@ -207,12 +185,15 @@ function applyTranslations() {
                     element.value = value;
                 }
             } else {
-                element.innerHTML = value;
+                element.textContent = value;
             }
-        } catch (error) {
-            console.error('Error applying translation to element:', element, error);
         }
     });
+}
+
+// Get nested object value by key path
+function getNestedValue(obj, path) {
+    return path.split('.').reduce((current, key) => current && current[key], obj);
 }
 
 // Skills Selector
@@ -225,15 +206,16 @@ function initializeSkillsSelector() {
     const selectedSkillsContainer = document.getElementById('selected-skills');
     const selectedSkills = new Set();
     
-    // Get skills from page data
-    let allSkills = [];
+    // Basic skills
+    let allSkills = ['Python', 'Java', 'JavaScript', 'HTML', 'CSS', 'SQL', 'Communication', 'Leadership', 'Teamwork', 'Problem Solving'];
+    
+    // Get skills from page data if available
     const skillsData = document.getElementById('skills-data');
     if (skillsData) {
         try {
             allSkills = JSON.parse(skillsData.textContent);
         } catch (e) {
             console.error('Error parsing skills data:', e);
-            allSkills = ['Python', 'Java', 'JavaScript', 'Communication', 'Leadership'];
         }
     }
     
@@ -254,49 +236,13 @@ function initializeSkillsSelector() {
         }
     }
     
-    // Add skill to selection
-    function addSkill(skill) {
-        if (selectedSkills.has(skill)) return;
-        
-        selectedSkills.add(skill);
-        
-        const skillTag = document.createElement('span');
-        skillTag.className = 'skill-tag';
-        skillTag.innerHTML = `
-            ${skill}
-            <button type="button" class="remove-skill" onclick="removeSkill('${skill}')">×</button>
-        `;
-        selectedSkillsContainer.appendChild(skillTag);
-        
-        updateHiddenInputs();
-        input.value = '';
-        dropdown.style.display = 'none';
-    }
-    
-    // Remove skill from selection
-    window.removeSkill = function(skill) {
-        selectedSkills.delete(skill);
-        const skillTags = selectedSkillsContainer.querySelectorAll('.skill-tag');
-        skillTags.forEach(tag => {
-            if (tag.textContent.includes(skill)) {
-                tag.remove();
-            }
-        });
-        updateHiddenInputs();
-    };
-    
-    // Filter and show skills dropdown
-    function showSkillsDropdown(query) {
-        if (!query) {
-            dropdown.style.display = 'none';
-            return;
-        }
+    // Filter and show skills
+    function showFilteredSkills(searchTerm) {
+        dropdown.innerHTML = '';
         
         const filteredSkills = allSkills.filter(skill => 
-            skill.toLowerCase().includes(query.toLowerCase()) && !selectedSkills.has(skill)
+            skill.toLowerCase().includes(searchTerm.toLowerCase()) && !selectedSkills.has(skill)
         );
-        
-        dropdown.innerHTML = '';
         
         if (filteredSkills.length === 0) {
             dropdown.style.display = 'none';
@@ -304,32 +250,53 @@ function initializeSkillsSelector() {
         }
         
         filteredSkills.slice(0, 10).forEach(skill => {
-            const option = document.createElement('div');
-            option.className = 'skill-option';
-            option.textContent = skill;
-            option.addEventListener('click', () => addSkill(skill));
-            dropdown.appendChild(option);
+            const skillElement = document.createElement('div');
+            skillElement.className = 'skill-option';
+            skillElement.textContent = skill;
+            skillElement.addEventListener('click', () => addSkill(skill));
+            dropdown.appendChild(skillElement);
         });
         
         dropdown.style.display = 'block';
     }
     
-    // Event listeners
-    input.addEventListener('input', function() {
-        showSkillsDropdown(this.value);
-    });
+    // Add skill
+    function addSkill(skill) {
+        if (selectedSkills.has(skill)) return;
+        
+        selectedSkills.add(skill);
+        
+        const skillTag = document.createElement('span');
+        skillTag.className = 'skill-tag';
+        skillTag.innerHTML = `${skill} <button type="button" onclick="this.parentElement.remove(); updateSkills('${skill}', false)">&times;</button>`;
+        selectedSkillsContainer.appendChild(skillTag);
+        
+        input.value = '';
+        dropdown.style.display = 'none';
+        updateHiddenInputs();
+    }
     
-    input.addEventListener('keydown', function(e) {
-        if (e.key === 'Enter') {
-            e.preventDefault();
-            const firstOption = dropdown.querySelector('.skill-option');
-            if (firstOption) {
-                addSkill(firstOption.textContent);
-            }
+    // Remove skill
+    window.updateSkills = function(skill, add) {
+        if (add) {
+            selectedSkills.add(skill);
+        } else {
+            selectedSkills.delete(skill);
+        }
+        updateHiddenInputs();
+    };
+    
+    // Input event
+    input.addEventListener('input', function() {
+        const searchTerm = this.value.trim();
+        if (searchTerm.length > 0) {
+            showFilteredSkills(searchTerm);
+        } else {
+            dropdown.style.display = 'none';
         }
     });
     
-    // Hide dropdown when clicking outside
+    // Click outside to close
     document.addEventListener('click', function(e) {
         if (!skillsContainer.contains(e.target)) {
             dropdown.style.display = 'none';
@@ -337,66 +304,27 @@ function initializeSkillsSelector() {
     });
 }
 
-// Form Validation
+// Form validation
 function initializeFormValidation() {
     const forms = document.querySelectorAll('form');
     forms.forEach(form => {
         form.addEventListener('submit', function(e) {
-            if (!validateForm(this)) {
-                e.preventDefault();
-            }
+            // Add any validation logic here
         });
     });
 }
 
-function validateForm(form) {
-    const requiredFields = form.querySelectorAll('[required]');
-    let isValid = true;
-    
-    requiredFields.forEach(field => {
-        if (!field.value.trim()) {
-            field.classList.add('error');
-            isValid = false;
-        } else {
-            field.classList.remove('error');
-        }
-    });
-    
-    return isValid;
-}
-
-// Feedback System
+// Feedback system
 function initializeFeedbackSystem() {
-    const feedbackButtons = document.querySelectorAll('.feedback-btn');
-    feedbackButtons.forEach(button => {
-        button.addEventListener('click', function() {
-            const rating = this.dataset.rating;
-            submitFeedback(rating);
-        });
-    });
+    // Add feedback functionality if needed
 }
 
-function submitFeedback(rating) {
-    console.log('Feedback submitted:', rating);
-    // Add feedback submission logic here
-}
-
-// Search Features
+// Search features  
 function initializeSearchFeatures() {
-    const searchInputs = document.querySelectorAll('.search-input');
-    searchInputs.forEach(input => {
-        input.addEventListener('input', function() {
-            performSearch(this.value);
-        });
-    });
+    // Add search functionality if needed
 }
 
-function performSearch(query) {
-    console.log('Searching for:', query);
-    // Add search logic here
-}
-
-// Tab Switching
+// Tab switching
 function switchTab(tabId) {
     const tabContents = document.querySelectorAll('.tab-content');
     tabContents.forEach(tab => tab.style.display = 'none');
@@ -408,12 +336,35 @@ function switchTab(tabId) {
     document.querySelector(`.tab-btn[onclick="switchTab('${tabId}')"]`).classList.add('active');
 }
 
-// Initialize when DOM is loaded
-document.addEventListener('DOMContentLoaded', function() {
-    console.log('DOM loaded, initializing app...');
-    initializeApp();
-});
+// Resume file handling
+function initializeResumeUpload() {
+    const fileInput = document.getElementById('resume-file');
+    const fileLabel = document.querySelector('.file-upload-label');
+    
+    if (fileInput && fileLabel) {
+        fileInput.addEventListener('change', function() {
+            if (this.files && this.files[0]) {
+                fileLabel.textContent = this.files[0].name;
+            } else {
+                fileLabel.textContent = 'Choose a file';
+            }
+        });
+    }
+}
 
-// Global functions for HTML onclick handlers
-window.switchTab = switchTab;
-window.removeSkill = window.removeSkill || function() {};
+// Initialize everything when DOM is loaded
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('DOM loaded - initializing app...');
+    
+    // Initialize main app
+    initializeApp();
+    
+    // Initialize language system
+    initializeLanguage();
+    initializeLanguageDropdown();
+    
+    // Initialize other features
+    initializeResumeUpload();
+    
+    console.log('All systems initialized');
+});
